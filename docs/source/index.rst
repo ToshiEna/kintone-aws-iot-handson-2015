@@ -1,5 +1,5 @@
 =============================
- AWS IoT ハンズオン ~基本編~
+ AWS IoT & kintone ハンズオン ~基本編~
 =============================
 
 .. toctree::
@@ -17,7 +17,8 @@
    08
    09
 
-本書はAWS IoTおよびAWSの各サービスを利用してIoTの基本的なシステムを構築するためのハンズオン手順 について記述しております。
+本書はAWS IoTおよびAWSの各サービスを利用してIoTの基本的なシステムを構築するためのハンズオン手順について記述しております。
+本ハンズオンでは、GINGA BLE ペリフェラルを利用します。
 
 前提条件
 ========
@@ -34,18 +35,8 @@
 
 事前準備
 ========
-以下のURLから必要なドライバをダウンロードし、インストールをお願いします。
+スタッフから必要なセンサーデバイスの貸出をうけてください。
 
-**Windowsの場合**
-
-* `Intel Edisonドライバのインストール <https://s3-ap-northeast-1.amazonaws.com/toshiake-iot-handson/classmethod-devday/tools/win/IntelEdisonDriverSetup1.2.1.exe>`_
-
-* `Windows FTDI ドライバのインストール <http://www.ftdichip.com/Drivers/CDM/CDM%20v2.10.00%20WHQL%20Certified.exe>`_
-
-
-**MacOSの場合**
-
-* `MacOS FTDI ドライバのインストール <https://s3-ap-northeast-1.amazonaws.com/toshiake-iot-handson/classmethod-devday/tools/mac/FTDIUSBSerialDriver_v2_2_18.dmg>`_
 
 
 サンプルプログラム
@@ -53,21 +44,18 @@
 
 本ハンズオンで利用するサンプルプログラムです。Edison上で利用します。
 
-https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiot-handson-fundamentals.zip
+ここにURL
 
 
 よくあるトラブル
 ================
 
-**AWS IoTのupdate shadow CLIを実行時にSSLエラーとなる**
 
-python 2.7.10にアップデート、AWS CLIの再インストールでOK。
 
   
 参考情報
 ========
-* `インテル Edisonの初期化とファームアップデート(Win) <http://edison-lab.jp/flash/windows/>`_
-* `インテル Edisonの初期化とファームアップデート(MacOS) <http://edison-lab.jp/flash/mac/>`_
+
 
 ハッシュタグ
 ============
