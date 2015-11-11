@@ -1,0 +1,40 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Resources" : {
+      "AWSIoTDeviceUser" : {
+          "Type" : "AWS::IAM::User",
+          "Properties" : {
+           }
+      },
+      "AWSIoTCreateCertPolicy" : {
+          "Type" : "AWS::IAM::Policy",
+          "Properties" : {
+              "PolicyName" : "AWSIoTCreateCertPolicy",
+              "PolicyDocument" : {
+                  "Statement": [{
+                      "Effect"   : "Allow",
+                      "Action"   : "iot:CreateCertificateFromCsr",
+                      "Resource" : "*"
+                  }]
+              },
+              "Users" : [ { "Ref" : "AWSIoTDeviceUser" } ]
+          }
+      },
+      "IAMUserKey" : {
+      "Type" : "AWS::IAM::AccessKey",
+          "Properties" : {
+              "UserName" : { "Ref": "AWSIoTDeviceUser" }
+          }
+      }
+  },
+  "Outputs" : {
+      "AccessKey" : {
+          "Value" : { "Ref" : "IAMUserKey" },
+          "Description" : "AWSAccessKeyId of new user"
+      },
+      "SecretKey" : {
+          "Value" : { "Fn::GetAtt" : ["IAMUserKey", "SecretAccessKey"]},
+          "Description" : "AWSSecretKey of new user"
+      }
+  }
+}

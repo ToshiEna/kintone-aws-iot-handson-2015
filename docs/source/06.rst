@@ -1,45 +1,137 @@
-===================
- LEDのリモート制御
-===================
-
-AWS CLIを実行し、Intel Edisonに接続されたLEDのON/OFFを行います。AWS IoTのShadowを利用してブラウザからEdisonのステータスの変更リクエストを送信し、Edisonは変更通知を元にLEDをOFF/ONします。また、完了後は最新のステータスをShadowにアップデートします。
-
-.. image:: images/senario2.png
+=================
+AWS Lambdaの設定
+=================
 
 
+コードの修正
+==============
+以下のサイトからコードをダウンロードします。
 
-プログラムの実行
-================
+https://ここかえる/*.zip
 
-Edison上で以下のプログラムを実行します。
+zipをunzipなどで解凍します。
+index.jsのノートパッドなどのツールで開きます。
 
-::
-   
-  root@edison:~# cd awsiot-handson-fundamentals/led
-  root@edison:~/awsiot-handson-fundamentals/led# node main.js
+.. code-block:: javascript
+  :linenos:   
 
-|          
+var moment = require('moment');
+var APP_ID = '<<アプリID>>';
+var SUBDOMAIN = '<<サブドメイン>>';
 
-マネージメントコンソールのAWS IoTを開き、リソースの一覧から"edison"を選択します。
+exports.handler = function(event, context) {
+  var dueDate = moment().add(1, 'd').format('YYYY-MM-DD');
+  var acceptNum = moment();
+  console.log(dueDate);
+  
 
-右の詳細画面から"Update State"をクリックし、"State Detail"の画面に以下のJSONを入力してください。入力が終わったら"Update State"をクリックします。クリック後、EdisonのLEDが点灯することを確認してください。
+	record = {
+		'受付番号': { value: acceptNum },
+		'タイトル': { value: event.title },
+		'インシデント': { value: 'アラート' },
+		'作業期限': { type: 'DATE', value: dueDate },
+		'内容': { value: event.value }
+	};
 
-::
-   
-   {
-     "reported": {
-       "led": "off"
-     },
-     "desired": {
-       "led": "on"
-     }
-   }
+	request({
+		method: 'POST',
+		url: "https://" + SUBDOMAIN + "/k/v1/record.json",
+		headers: {
+			'X-Cybozu-Authorization': '<<Auth情報>>',
+			'Authorization': 'Basic <<Auth情報>>',
+			'Content-Type': 'application/json'
+		},
+		json: {
+			'app': APP_ID,
+			'record': record
+        }
+	}, function(err, response, body) {
+		if (err) {
+			consle.log("err : " + util.inspect(err));
+		}
+		if (response.statusCode === 200) {
+			console.log('RESULT: ');
+			context.succeed();
+		} else {
+			console.log("response error: " + response.statusCode + ", " + err);
+			console.log("response error: " + body.message);
+		}
+	});
+};
 
-|
 
-.. image:: images/6-led-1.png
+アプリIDアプリ、サブドメイン(cybozu.comまで含む)、Auth情報(同一のデータ)を編集して、保存します。
 
-|   
+編集後、AWS Lambdaにコードをアップロードするためにサイドzipで圧縮します。
 
-"desired"内にある"led"アイテムの値をoff/onのように記述を変更することでLEDの消灯/点灯を行なうことができます。
+$ zip -r index.zip index.js node_module
+
+
+AWS Lambdaの設定
+==============
+
+AWS Lambdaのコンソールをサービス一覧から選択し、起動します。
+改めて東京リージョンであることを確認してください。
+"Create a Lambda Function"を選択します。
+
+.. image:: images/6-lambda-create-lambda.png
+
+|           
+
+
+Select blueprintは、スキップします。
+
+.. image:: images/6-lambda-skip-blueprint.png
+
+|           
+
+Configure Function画面で名前の入力などを行います。Uploadボタンをクリックし、上記で作成したZipファイルを選択します。
+RoleのリストからBasic execution roleを選択します。
+
+.. image:: images/6-lambda-conf-func-role.png
+
+|           
+
+ロールを作成する画面に遷移するので、内容を確認して、"許可"ボタンをクリックします。
+
+.. image:: images/6-lambda-create-role.png
+
+|           
+
+画面が元のConfiguration Functionに戻り、Timeoutを59秒にして、"Next"ボタンをクリックします。
+
+.. image:: images/6-lambda-conf-func-param.png
+
+|           
+
+確認画面で確認して、"Create Function"をクリックします。
+
+.. image:: images/6-lambda-confirm.png
+
+|           
+
+.. image:: images/6-lambda-done.png
+
+|           
+
+
+AWS IoTのルール設定
+==============
+
+Lambdaの登録が終わったので、先ほどのSNSと同様の手段で、Lambdaを設定します。
+手順は、SNSとほぼ同等で、Lambdaを選択する部分のみことなります。
+
+.. image:: images/6-iot-lambda-rule.png
+
+|           
+
+
+これで準備は整いました。
+SNSの時と同様10秒単位でセンサーデータがAWS IoTにPublishされてます。
+設定がうまく行っていれば、kintoneの障害対応アプリ内にデータが蓄積されます。
+
+
+
+
+
 

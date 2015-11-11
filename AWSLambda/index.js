@@ -1,7 +1,7 @@
 var request = require('request');
 var moment = require('moment');
-var APP_ID = '14';
-var SUBDOMAIN = '<<ここにサブドメイン>>';
+var APP_ID = '<<AppID>>';
+var SUBDOMAIN = '<<Subdomain>>';
 
 exports.handler = function(event, context) {
   var dueDate = moment().add(1, 'd').format('YYYY-MM-DD');
@@ -21,8 +21,8 @@ exports.handler = function(event, context) {
 		method: 'POST',
 		url: "https://" + SUBDOMAIN + "/k/v1/record.json",
 		headers: {
-			'X-Cybozu-Authorization': '<<Auth情報>>',
-			'Authorization': 'Basic <<Auth情報>>',
+			'X-Cybozu-Authorization': '<<Auth>>',
+			'Authorization': 'Basic <<Auth>>',
 			'Content-Type': 'application/json'
 		},
 		json: {

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. LEDのリモート制御 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
+    <title>5. AWS Lambdaの設定 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <link rel="top" title="awsiot-handson-fundamentals 0.0 ドキュメント" href="index.html" />
     <link rel="next" title="6. その他の設定（オプション）" href="07.html" />
-    <link rel="prev" title="4. センサーデータの送信" href="05.html" /> 
+    <link rel="prev" title="4. kintoneの設定" href="05.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,7 +39,7 @@
           <a href="07.html" title="6. その他の設定（オプション）"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="05.html" title="4. センサーデータの送信"
+          <a href="05.html" title="4. kintoneの設定"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>
@@ -50,40 +50,130 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="led">
-<h1>5. LEDのリモート制御<a class="headerlink" href="#led" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>AWS CLIを実行し、Intel Edisonに接続されたLEDのON/OFFを行います。AWS IoTのShadowを利用してブラウザからEdisonのステータスの変更リクエストを送信し、Edisonは変更通知を元にLEDをOFF/ONします。また、完了後は最新のステータスをShadowにアップデートします。</p>
-<img alt="_images/senario2.png" src="_images/senario2.png" />
+  <div class="section" id="aws-lambda">
+<h1>5. AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <div class="section" id="id1">
-<h2>5.1. プログラムの実行<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>Edison上で以下のプログラムを実行します。</p>
-<div class="highlight-python"><div class="highlight"><pre>root@edison:~# cd awsiot-handson-fundamentals/led
-root@edison:~/awsiot-handson-fundamentals/led# node main.js
+<h2>5.1. コードの修正<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>以下のサイトからコードをダウンロードします。</p>
+<p><a class="reference external" href="https:/">https:/</a>/ここかえる/<a href="#id2"><span class="problematic" id="id3">*</span></a>.zip</p>
+<p>zipをunzipなどで解凍します。
+index.jsのノートパッドなどのツールで開きます。</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre>
 </pre></div>
+</td></tr></table></div>
+<p>var moment = require(&#8216;moment&#8217;);
+var APP_ID = &#8216;&lt;&lt;アプリID&gt;&gt;&#8217;;
+var SUBDOMAIN = &#8216;&lt;&lt;サブドメイン&gt;&gt;&#8217;;</p>
+<dl class="docutils">
+<dt>exports.handler = function(event, context) {</dt>
+<dd><p class="first">var dueDate = moment().add(1, &#8216;d&#8217;).format(&#8216;YYYY-MM-DD&#8217;);
+var acceptNum = moment();
+console.log(dueDate);</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>record = {</dt>
+<dd>&#8216;受付番号&#8217;: { value: acceptNum },
+&#8216;タイトル&#8217;: { value: event.title },
+&#8216;インシデント&#8217;: { value: &#8216;アラート&#8217; },
+&#8216;作業期限&#8217;: { type: &#8216;DATE&#8217;, value: dueDate },
+&#8216;内容&#8217;: { value: event.value }</dd>
+</dl>
+<p>};</p>
+<dl class="docutils">
+<dt>request({</dt>
+<dd><p class="first">method: &#8216;POST&#8217;,
+url: &#8220;<a class="reference external" href="https://">https://</a>&#8221; + SUBDOMAIN + &#8220;/k/v1/record.json&#8221;,
+headers: {</p>
+<blockquote>
+<div>&#8216;X-Cybozu-Authorization&#8217;: &#8216;&lt;&lt;Auth情報&gt;&gt;&#8217;,
+&#8216;Authorization&#8217;: &#8216;Basic &lt;&lt;Auth情報&gt;&gt;&#8217;,
+&#8216;Content-Type&#8217;: &#8216;application/json&#8217;</div></blockquote>
+<p>},
+json: {</p>
+<blockquote class="last">
+<div>&#8216;app&#8217;: APP_ID,
+&#8216;record&#8217;: record</div></blockquote>
+</dd>
+</dl>
+<p>}
+}, function(err, response, body) {</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>if (err) {</dt>
+<dd>consle.log(&#8220;err : &#8221; + util.inspect(err));</dd>
+</dl>
+<p>}
+if (response.statusCode === 200) {</p>
+<blockquote>
+<div>console.log(&#8216;RESULT: &#8216;);
+context.succeed();</div></blockquote>
+<dl class="docutils">
+<dt>} else {</dt>
+<dd>console.log(&#8220;response error: &#8221; + response.statusCode + &#8221;, &#8221; + err);
+console.log(&#8220;response error: &#8221; + body.message);</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>});</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>};</p>
+<p>アプリIDアプリ、サブドメイン(cybozu.comまで含む)、Auth情報(同一のデータ)を編集して、保存します。</p>
+<p>編集後、AWS Lambdaにコードをアップロードするためにサイドzipで圧縮します。</p>
+<p>$ zip -r index.zip index.js node_module</p>
 </div>
+<div class="section" id="id4">
+<h2>5.2. AWS Lambdaの設定<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>AWS Lambdaのコンソールをサービス一覧から選択し、起動します。
+改めて東京リージョンであることを確認してください。
+&#8220;Create a Lambda Function&#8221;を選択します。</p>
+<img alt="_images/6-lambda-create-lambda.png" src="_images/6-lambda-create-lambda.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>マネージメントコンソールのAWS IoTを開き、リソースの一覧から&#8221;edison&#8221;を選択します。</p>
-<p>右の詳細画面から&#8221;Update State&#8221;をクリックし、&#8221;State Detail&#8221;の画面に以下のJSONを入力してください。入力が終わったら&#8221;Update State&#8221;をクリックします。クリック後、EdisonのLEDが点灯することを確認してください。</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-  <span class="s">&quot;reported&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;led&quot;</span><span class="p">:</span> <span class="s">&quot;off&quot;</span>
-  <span class="p">},</span>
-  <span class="s">&quot;desired&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;led&quot;</span><span class="p">:</span> <span class="s">&quot;on&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<p>Select blueprintは、スキップします。</p>
+<img alt="_images/6-lambda-skip-blueprint.png" src="_images/6-lambda-skip-blueprint.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<img alt="_images/6-led-1.png" src="_images/6-led-1.png" />
+<p>Configure Function画面で名前の入力などを行います。Uploadボタンをクリックし、上記で作成したZipファイルを選択します。
+RoleのリストからBasic execution roleを選択します。</p>
+<img alt="_images/6-lambda-conf-func-role.png" src="_images/6-lambda-conf-func-role.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>&#8220;desired&#8221;内にある&#8221;led&#8221;アイテムの値をoff/onのように記述を変更することでLEDの消灯/点灯を行なうことができます。</p>
+<p>ロールを作成する画面に遷移するので、内容を確認して、&#8221;許可&#8221;ボタンをクリックします。</p>
+<img alt="_images/6-lambda-create-role.png" src="_images/6-lambda-create-role.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>画面が元のConfiguration Functionに戻り、Timeoutを59秒にして、&#8221;Next&#8221;ボタンをクリックします。</p>
+<img alt="_images/6-lambda-conf-func-param.png" src="_images/6-lambda-conf-func-param.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>確認画面で確認して、&#8221;Create Function&#8221;をクリックします。</p>
+<img alt="_images/6-lambda-confirm.png" src="_images/6-lambda-confirm.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<img alt="_images/6-lambda-done.png" src="_images/6-lambda-done.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="aws-iot">
+<h2>5.3. AWS IoTのルール設定<a class="headerlink" href="#aws-iot" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Lambdaの登録が終わったので、先ほどのSNSと同様の手段で、Lambdaを設定します。
+手順は、SNSとほぼ同等で、Lambdaを選択する部分のみことなります。</p>
+<img alt="_images/6-iot-lambda-rule.png" src="_images/6-iot-lambda-rule.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>これで準備は整いました。
+SNSの時と同様10秒単位でセンサーデータがAWS IoTにPublishされてます。
+設定がうまく行っていれば、kintoneの障害対応アプリ内にデータが蓄積されます。</p>
 </div>
 </div>
 
@@ -95,15 +185,17 @@ root@edison:~/awsiot-handson-fundamentals/led# node main.js
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">目次</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5. LEDのリモート制御</a><ul>
-<li><a class="reference internal" href="#id1">5.1. プログラムの実行</a></li>
+<li><a class="reference internal" href="#">5. AWS Lambdaの設定</a><ul>
+<li><a class="reference internal" href="#id1">5.1. コードの修正</a></li>
+<li><a class="reference internal" href="#id4">5.2. AWS Lambdaの設定</a></li>
+<li><a class="reference internal" href="#aws-iot">5.3. AWS IoTのルール設定</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>前のトピックへ</h4>
   <p class="topless"><a href="05.html"
-                        title="前の章へ">4. センサーデータの送信</a></p>
+                        title="前の章へ">4. kintoneの設定</a></p>
   <h4>次のトピックへ</h4>
   <p class="topless"><a href="07.html"
                         title="次の章へ">6. その他の設定（オプション）</a></p>
@@ -141,7 +233,7 @@ root@edison:~/awsiot-handson-fundamentals/led# node main.js
           <a href="07.html" title="6. その他の設定（オプション）"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="05.html" title="4. センサーデータの送信"
+          <a href="05.html" title="4. kintoneの設定"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>

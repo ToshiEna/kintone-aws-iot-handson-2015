@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. ハンズオン準備 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
+    <title>AWS IoT基本設定 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,9 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/translations.js"></script>
-    <link rel="top" title="awsiot-handson-fundamentals 0.0 ドキュメント" href="index.html" />
-    <link rel="next" title="3. AWS IoT基本設定" href="04.html" />
-    <link rel="prev" title="1. イントロダクション" href="01.html" /> 
+    <link rel="top" title="awsiot-handson-fundamentals 0.0 ドキュメント" href="index.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,12 +33,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="right" >
-          <a href="04.html" title="3. AWS IoT基本設定"
-             accesskey="N">次へ</a> |</li>
-        <li class="right" >
-          <a href="01.html" title="1. イントロダクション"
-             accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>  
@@ -50,106 +42,90 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>2. ハンズオン準備<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>ハンズオンを始めるにあたり、事前の準備設定を行います。</p>
-<div class="section" id="cloudformation">
-<h2>2.1. ハンズオン用CloudFormationのスタック作成<a class="headerlink" href="#cloudformation" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>ハンズオンで利用するIAMユーザ、DynamoDBテーブルを作成を自動化するために、CloudFormationのスタックを作成します。IAMユーザはedisonの証明書を作成するための権限を与えるために作成します。また、DynamoDBテーブルはシナリオ１のセンサーデータの保存用のテーブルとなります。</p>
+  <div class="section" id="aws-iot">
+<h1>AWS IoT基本設定<a class="headerlink" href="#aws-iot" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id1">
+<h2>デバイスの作成<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>AWSマネージメントコンソールへログインし、画面右上のメニューから東京リージョンを選択します。
+サービス一覧から&#8221;AWS IoT&#8221;をクリックします。</p>
+<img alt="_images/3-servicemenu.png" src="_images/3-servicemenu.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>マネージメントコンソールのサービス一覧から&#8221;Cloud Formation&#8221;をクリックします。</p>
-<img alt="_images/3-cf-1.png" src="_images/3-cf-1.png" />
+<p>“Get Startedが表示される場合はそちらをクリックします。</p>
+<img alt="_images/3-getstart.png" src="_images/3-getstart.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>&#8220;Choose a template&#8221;から&#8221;Specify an Amazon S3 template URL&#8221;にチェックを入れ、以下のパスを入力し、[Next]をクリックします。</p>
-<p><a class="reference external" href="https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiothandson.template">https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiothandson.template</a></p>
+<p>デバイス(Thing)を作成します。メニューの”Create a thing”をクリックします。Nameに指定されたデバイスIDを入力し、[Create]をクリックします。
+（注意）画面でデバイスIDがedisonになっております。</p>
+<img alt="_images/3-create-thing.png" src="_images/3-create-thing.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<img alt="_images/3-cf-2.png" src="_images/3-cf-2.png" />
-<p>&#8220;Stack Name&#8221;に&#8221;AWSIoTHandsonStack&#8221;と入力し、[Next]をクリックします。</p>
-<img alt="_images/3-cf-3.png" src="_images/3-cf-3.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>&#8220;Options&#8221;で何も入力せずに[Next]をクリックします。</p>
-<img alt="_images/3-cf-4.png" src="_images/3-cf-4.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>&#8220;Resource&#8221;の画面を下にスクロールし、&#8221;Capabilities&#8221;で&#8221;I acknowledge that this template...&#8221;にチェックを入れ、[Create]をクリックします。</p>
-<img alt="_images/3-cf-5.png" src="_images/3-cf-5.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>Cloud Formationのスタックの一覧に作成したスタックが表示されるのを確認します。Statusは&#8221;CREATE_IN_PROGRESS&#8221;から&#8221;CREATE_COMPLETE&#8221;になるのを確認します。</p>
-<img alt="_images/3-cf-6.png" src="_images/3-cf-6.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<img alt="_images/3-cf-7.png" src="_images/3-cf-7.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p>画面下の&#8221;Output&#8221;タブをクリックし、AccessKeyとSecretKeyが表示されていることを確認し、こちらの内容をメモ帳などにコピーしてください。</p>
-<img alt="_images/3-cf-8.png" src="_images/3-cf-8.png" />
+<p>リソースの一覧で作成したデバイスが表示されます。</p>
+<img alt="_images/3-thing.png" src="_images/3-thing.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </div>
-<div class="section" id="edison">
-<h2>2.2. Edison用サンプルコードの準備<a class="headerlink" href="#edison" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>ハンズオンで利用するEdison用のサンプルコードのダウンロード、初期設定を行います。</p>
+<div class="section" id="id2">
+<h2>ポリシーの作成<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>デバイスに対して、AWS IoTの各種操作を許可するためのポリシーを作成します。メニューの”Create a policy”をクリックします。フォームにそれぞれ以下のパラメータを入力し、[Create]をクリックします。</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">項目</th>
+<th class="head">値</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Name</td>
+<td>awsiot-handson-policy</td>
+</tr>
+<tr class="row-odd"><td>Action</td>
+<td>iot:*</td>
+</tr>
+<tr class="row-even"><td>Resource</td>
+<td><ul class="first last simple">
+<li>(アスタリスク)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>Edison上で以下のコマンドを実行し、サンプルコードのダウンロード、zipファイルの解凍を行います。</p>
-<div class="highlight-python"><div class="highlight"><pre>root@edison:~# wget https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiot-handson-fundamentals.zip
-
-root@edison:~# unzip awsiot-handson-fundamentals.zip
-</pre></div>
-</div>
+<img alt="_images/3-create-policy.png" src="_images/3-create-policy.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>証明書を取得するためのスクリプトの設定を行います。解凍したサンプルコードのawsiot-handson-fundamentals/certsディレクトリに移動し、config.jsonの先ほどコピーしたCloudFormationのOutputのAccessKey/SecretKeyを入力します。</p>
-<div class="highlight-python"><div class="highlight"><pre>root@edison:~# cd awsiot-handson-fundamentals/certs
-root@edison:~/awsiot-handson-fundamentals/certs# vi config.json
-</pre></div>
-</div>
+<p>作成したポリシーがリソースの一覧に表示されます。</p>
+<img alt="_images/3-policy.png" src="_images/3-policy.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>{
-  &quot;accessKeyId&quot;: &quot;&lt;your access key&gt;&quot;,        ←&lt;your access key&gt;にAccessKeyを入力
-  &quot;secretAccessKey&quot;: &quot;&lt;your secret key&gt;&quot;,    ←&lt;your secret key&gt;にSecretKeyを入力
-  &quot;region&quot;: &quot;ap-northeast-1&quot;
-}
-</pre></div>
-</div>
+<p>先ほど作成した証明書をポリシーに割当てます。リスト中の証明書をクリックし、[Actions]-[Attach a policy]をクリックしてください。(3章で証明書を作成したときのcertificateIdの証明書をリソースから選択してください。）</p>
+<img alt="_images/3-attach-policy.png" src="_images/3-attach-policy.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>証明書作成のスクリプトを実行します。certsディレクトリにはすでにプライベートキー(privatekey.pem)とCSR(cert.csr)が存在しており、CSRの内容を元に証明書を作成しています。出力されるcertificateIdの英数字文字列をメモ帳にコピーしてください。次章のAWS IoTの設定の中で証明書を特定するために利用します。</p>
-<div class="highlight-python"><div class="highlight"><pre> root@edison:~/awsiot-handson-fundamentals/certs# node create_cert.js
- ~
- { certificateArn: &#39;arn:aws:iot:ap-northeast-1:xxxxxxxxxxxxxx:cert/&lt;英数字文字列&gt;&#39;,
-certificateId: &#39;&lt;英数字文字列&gt;&#39;,
-~
-</pre></div>
-</div>
+<p>“Confirm”の画面で、フォームにポリシー名”awsiot-handson-policy”を入力し、[Attach]をクリックします。</p>
+<img alt="_images/3-attach-policy-2.png" src="_images/3-attach-policy-2.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>証明書ファイル(cert.pem)がcertsディレクトリ内に存在することを確認します。</p>
-<div class="highlight-python"><div class="highlight"><pre>root@edison:~/awsiot-handson-fundamentals/certs# ls
-cert.csr        config.json     node_modules    rootca.crt
-cert.pem        create_cert.js  privatekey.pem
-</pre></div>
+<p>次に、デバイスと証明書の関連付けを行います。作成した証明書をリソース一覧の中から選択し、[Actions]-[Attach a thingクリックします。</p>
+<img alt="_images/3-attach-thing.png" src="_images/3-attach-thing.png" />
+<div class="line-block">
+<div class="line"><br /></div>
 </div>
+<p>&#8220;Thing Name&#8221;にデバイス名: 指定されたデバイスIDを入力し、[Attach]をクリックします。</p>
+<img alt="_images/3-attach-thing-2.png" src="_images/3-attach-thing-2.png" />
 </div>
 </div>
 
@@ -161,19 +137,13 @@ cert.pem        create_cert.js  privatekey.pem
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">目次</a></h3>
   <ul>
-<li><a class="reference internal" href="#">2. ハンズオン準備</a><ul>
-<li><a class="reference internal" href="#cloudformation">2.1. ハンズオン用CloudFormationのスタック作成</a></li>
-<li><a class="reference internal" href="#edison">2.2. Edison用サンプルコードの準備</a></li>
+<li><a class="reference internal" href="#">AWS IoT基本設定</a><ul>
+<li><a class="reference internal" href="#id1">デバイスの作成</a></li>
+<li><a class="reference internal" href="#id2">ポリシーの作成</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>前のトピックへ</h4>
-  <p class="topless"><a href="01.html"
-                        title="前の章へ">1. イントロダクション</a></p>
-  <h4>次のトピックへ</h4>
-  <p class="topless"><a href="04.html"
-                        title="次の章へ">3. AWS IoT基本設定</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -204,12 +174,6 @@ cert.pem        create_cert.js  privatekey.pem
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="right" >
-          <a href="04.html" title="3. AWS IoT基本設定"
-             >次へ</a> |</li>
-        <li class="right" >
-          <a href="01.html" title="1. イントロダクション"
-             >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>

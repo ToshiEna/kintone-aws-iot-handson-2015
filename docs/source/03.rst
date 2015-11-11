@@ -1,118 +1,79 @@
-================
- ハンズオン準備
-================
+=================
+AWS IoT基本設定
+=================
 
-ハンズオンを始めるにあたり、事前の準備設定を行います。
+デバイスの作成
+==============
 
-ハンズオン用CloudFormationのスタック作成
-========================================
+AWSマネージメントコンソールへログインし、画面右上のメニューから東京リージョンを選択します。
+サービス一覧から"AWS IoT"をクリックします。
 
-ハンズオンで利用するIAMユーザ、DynamoDBテーブルを作成を自動化するために、CloudFormationのスタックを作成します。IAMユーザはedisonの証明書を作成するための権限を与えるために作成します。また、DynamoDBテーブルはシナリオ１のセンサーデータの保存用のテーブルとなります。
+.. image:: images/3-servicemenu.png
 
-|
+|           
+                   
+“Get Startedが表示される場合はそちらをクリックします。
 
-マネージメントコンソールのサービス一覧から"Cloud Formation"をクリックします。
-
-.. image:: images/3-cf-1.png
-
-|
-
-"Choose a template"から"Specify an Amazon S3 template URL"にチェックを入れ、以下のパスを入力し、[Next]をクリックします。
-
-https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiothandson.template
-
-|
-
-.. image:: images/3-cf-2.png
-
-"Stack Name"に"AWSIoTHandsonStack"と入力し、[Next]をクリックします。
-
-.. image:: images/3-cf-3.png
-
-|
-
-"Options"で何も入力せずに[Next]をクリックします。
-
-.. image:: images/3-cf-4.png
-
-|
-
-"Resource"の画面を下にスクロールし、"Capabilities"で"I acknowledge that this template..."にチェックを入れ、[Create]をクリックします。
-
-.. image:: images/3-cf-5.png
-
-|
-
-Cloud Formationのスタックの一覧に作成したスタックが表示されるのを確認します。Statusは"CREATE_IN_PROGRESS"から"CREATE_COMPLETE"になるのを確認します。
-
-.. image:: images/3-cf-6.png
+.. image:: images/3-getstart.png
 
 |           
 
-.. image:: images/3-cf-7.png
+デバイス(Thing)を作成します。メニューの”Create a thing”をクリックします。Nameに指定されたデバイスIDを入力し、[Create]をクリックします。
+（注意）画面でデバイスIDがedisonになっております。
+
+.. image:: images/3-create-thing.png
+
+|           
+
+リソースの一覧で作成したデバイスが表示されます。
+
+.. image:: images/3-thing.png
+
+|           
+
+ポリシーの作成
+==============
+
+デバイスに対して、AWS IoTの各種操作を許可するためのポリシーを作成します。メニューの”Create a policy”をクリックします。フォームにそれぞれ以下のパラメータを入力し、[Create]をクリックします。
+
+============= ============================
+項目          値
+============= ============================
+Name          awsiot-handson-policy
+Action        iot:*
+Resource      * (アスタリスク)
+============= ============================
 
 |
 
-画面下の"Output"タブをクリックし、AccessKeyとSecretKeyが表示されていることを確認し、こちらの内容をメモ帳などにコピーしてください。
+.. image:: images/3-create-policy.png
 
-.. image:: images/3-cf-8.png
+|           
 
-|
+作成したポリシーがリソースの一覧に表示されます。
 
-Edison用サンプルコードの準備
-============================
+.. image:: images/3-policy.png
 
-ハンズオンで利用するEdison用のサンプルコードのダウンロード、初期設定を行います。
+|           
 
-|
+先ほど作成した証明書をポリシーに割当てます。リスト中の証明書をクリックし、[Actions]-[Attach a policy]をクリックしてください。(3章で証明書を作成したときのcertificateIdの証明書をリソースから選択してください。）
 
-Edison上で以下のコマンドを実行し、サンプルコードのダウンロード、zipファイルの解凍を行います。
+.. image:: images/3-attach-policy.png
 
-::
-   
-   root@edison:~# wget https://s3-ap-northeast-1.amazonaws.com/awsiot-handson-jp/awsiot-handson-fundamentals.zip
+|           
 
-   root@edison:~# unzip awsiot-handson-fundamentals.zip
+“Confirm”の画面で、フォームにポリシー名”awsiot-handson-policy”を入力し、[Attach]をクリックします。
 
-|
+.. image:: images/3-attach-policy-2.png
 
-証明書を取得するためのスクリプトの設定を行います。解凍したサンプルコードのawsiot-handson-fundamentals/certsディレクトリに移動し、config.jsonの先ほどコピーしたCloudFormationのOutputのAccessKey/SecretKeyを入力します。
+|           
 
-::
-   
-   root@edison:~# cd awsiot-handson-fundamentals/certs
-   root@edison:~/awsiot-handson-fundamentals/certs# vi config.json
+次に、デバイスと証明書の関連付けを行います。作成した証明書をリソース一覧の中から選択し、[Actions]-[Attach a thingクリックします。
 
-|
+.. image:: images/3-attach-thing.png
 
-::
-   
-   {
-     "accessKeyId": "<your access key>",        ←<your access key>にAccessKeyを入力
-     "secretAccessKey": "<your secret key>",    ←<your secret key>にSecretKeyを入力
-     "region": "ap-northeast-1"
-   }
+|           
 
-|
+"Thing Name"にデバイス名: 指定されたデバイスIDを入力し、[Attach]をクリックします。
 
-証明書作成のスクリプトを実行します。certsディレクトリにはすでにプライベートキー(privatekey.pem)とCSR(cert.csr)が存在しており、CSRの内容を元に証明書を作成しています。出力されるcertificateIdの英数字文字列をメモ帳にコピーしてください。次章のAWS IoTの設定の中で証明書を特定するために利用します。
-
-::
-   
-   root@edison:~/awsiot-handson-fundamentals/certs# node create_cert.js
-   ~
-   { certificateArn: 'arn:aws:iot:ap-northeast-1:xxxxxxxxxxxxxx:cert/<英数字文字列>',
-  certificateId: '<英数字文字列>',
-  ~
- 
-|
-
-証明書ファイル(cert.pem)がcertsディレクトリ内に存在することを確認します。
-   
-::
-
-   root@edison:~/awsiot-handson-fundamentals/certs# ls
-   cert.csr        config.json     node_modules    rootca.crt
-   cert.pem        create_cert.js  privatekey.pem
-
-   
+.. image:: images/3-attach-thing-2.png

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. インテルEdisonの設定 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
+    <title>2. ハンズオン準備 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/translations.js"></script>
     <link rel="top" title="awsiot-handson-fundamentals 0.0 ドキュメント" href="index.html" />
-    <link rel="next" title="3. ハンズオン準備" href="03.html" />
+    <link rel="next" title="3. Amazon SNSの設定" href="04.html" />
     <link rel="prev" title="1. イントロダクション" href="01.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="03.html" title="3. ハンズオン準備"
+          <a href="04.html" title="3. Amazon SNSの設定"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="01.html" title="1. イントロダクション"
@@ -50,149 +50,94 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="edison">
-<h1>2. インテルEdisonの設定<a class="headerlink" href="#edison" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>インテルEdisonの準備を行います。</p>
-<div class="section" id="id1">
-<h2>2.1. センサーの接続<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>Grove Kitの中から照度センサーとLED、LCDを取出してください。</p>
+  <div class="section" id="id1">
+<h1>2. ハンズオン準備<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>ハンズオンを始めるにあたり、事前の準備設定を行います。</p>
+<div class="section" id="cloudformation">
+<h2>2.1. ハンズオン用CloudFormationのスタック作成<a class="headerlink" href="#cloudformation" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>ハンズオンで利用するIAMユーザを作成を自動化するために、CloudFormationのスタックを作成します。IAMユーザはデバイスの証明書を作成するための権限を与えるために作成します。
+今回のハンズオンでは、セントラルゲートウェイ側でAWS IoTへの処理を行うため、スタッフ側で証明書生成の実行を行います。スタッフが代わりに実行するためスタッフに作成したIAMユーザのAPI Keyを
+渡してください。本ユーザは、必ず、ハンズオン終了後に削除してください。
+作成されるユーザは、署名要求ができる権限のみ付与しております。</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>照度センサーはこちらです。(LIGHTと書いてあります）</p>
-<img alt="_images/2-illuminance-1.png" src="_images/2-illuminance-1.png" />
+<p>マネージメントコンソールのサービス一覧から&#8221;Cloud Formation&#8221;をクリックします。</p>
+<img alt="_images/2-cf-1.png" src="_images/2-cf-1.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>LEDは組み立て式となります。袋からLEDを取り出してボードに装着します。ピンが長い方が+となります。</p>
-<img alt="_images/2-led-1.png" src="_images/2-led-1.png" />
-<img alt="_images/2-led-2.png" src="_images/2-led-2.png" />
+<p>&#8220;Choose a template&#8221;から&#8221;Specify an Amazon S3 template URL&#8221;にチェックを入れ、以下のパスを入力し、[Next]をクリックします。</p>
+<p><a class="reference external" href="https:/">https:/</a>/ここかえる/awsiothandson.template</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>LCDはこちらです。</p>
-<img alt="_images/2-lcd-1.png" src="_images/2-lcd-1.png" />
+<img alt="_images/2-cf-2.png" src="_images/2-cf-2.png" />
+<p>&#8220;Stack Name&#8221;に&#8221;AWSIoTHandsonStack&#8221;と入力し、[Next]をクリックします。</p>
+<img alt="_images/2-cf-3.png" src="_images/2-cf-3.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>次に、Arduino互換ボードをEdisonに装着します。(Arduino互換ボードの図)</p>
+<p>&#8220;Options&#8221;で何も入力せずに[Next]をクリックします。</p>
+<img alt="_images/2-cf-4.png" src="_images/2-cf-4.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>Arduino互換ボードにセンサーとLED、LCDを接続します。以下のように接続してください。</p>
+<p>&#8220;Resource&#8221;の画面を下にスクロールし、&#8221;Capabilities&#8221;で&#8221;I acknowledge that this template...&#8221;にチェックを入れ、[Create]をクリックします。</p>
+<img alt="_images/2-cf-5.png" src="_images/2-cf-5.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="43%" />
-<col width="57%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">ポート</th>
-<th class="head">設定</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>A0</td>
-<td>照度センサー</td>
-</tr>
-<tr class="row-odd"><td>D8</td>
-<td>LED</td>
-</tr>
-<tr class="row-even"><td>I2C</td>
-<td>LCD</td>
-</tr>
-</tbody>
-</table>
+<p>Cloud Formationのスタックの一覧に作成したスタックが表示されるのを確認します。Statusは&#8221;CREATE_IN_PROGRESS&#8221;から&#8221;CREATE_COMPLETE&#8221;になるのを確認します。</p>
+<img alt="_images/2-cf-6.png" src="_images/2-cf-6.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<img alt="_images/2-edison-1.png" src="_images/2-edison-1.png" />
+<img alt="_images/2-cf-7.png" src="_images/2-cf-7.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>画面下の&#8221;Output&#8221;タブをクリックし、AccessKeyとSecretKeyが表示されていることを確認し、こちらの内容をスタッフの支持に従って渡してください。</p>
+<img alt="_images/2-cf-8.png" src="_images/2-cf-8.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </div>
 <div class="section" id="id2">
-<h2>2.2. シリアルポート接続<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>Edisonへ接続します。まず、Edisonにシリアルポート経由で接続します。USBケーブルでPCとEdisonを接続し、シリアルコンソールを開きます。</p>
-<p><strong>Windowsの場合</strong></p>
-<p>USBケーブルとACアダプタを図のように接続してください。</p>
-<img alt="_images/usb-win.png" src="_images/usb-win.png" />
-<p><strong>MacOSの場合</strong></p>
-<p>USBケーブル2本を図のように接続してください。</p>
-<img alt="_images/usb-mac.png" src="_images/usb-mac.png" />
-<p>ターミナルソフトでEdisonに接続してください。接続に必要な情報はこちらです。<strong>特にBaud Rateにご注意ください!</strong></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="12%" />
-<col width="88%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">設定</th>
-<th class="head">設定項目</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Port</td>
-<td>Edisonが接続されているUSBポート(Macであれば/dev/cu.usbserial-xxxx[FTDI])</td>
-</tr>
-<tr class="row-odd"><td>Baud Rate</td>
-<td>115200</td>
-</tr>
-<tr class="row-even"><td>Data Bits</td>
-<td>8</td>
-</tr>
-<tr class="row-odd"><td>Stop Bits</td>
-<td>1</td>
-</tr>
-<tr class="row-even"><td>Parity</td>
-<td>none</td>
-</tr>
-</tbody>
-</table>
-<p>Teratermをご利用の場合、メニューの[設定]-[シリアルポート]からスピードを&#8221;115200&#8221;に変更するのを忘れないでください。</p>
-<p>MacOSをご利用の場合は、ターミナルから以下のコマンドを入力することで接続が可能です。</p>
-<div class="highlight-python"><div class="highlight"><pre>$ sudo screen /dev/tty.usbserial-XXXXXXX 115200
+<h2>2.2. 【スタッフ用】サンプルコードの準備<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>証明書を取得するためのスクリプトの設定を行います。各デバイスごとのフォルダ{device-id}以下のcertsディレクトリに移動し、config.jsonの先ほどコピーしたCloudFormationのOutputのAccessKey/SecretKeyを入力します。</p>
+<div class="highlight-python"><div class="highlight"><pre>root:~# cd {device-id}/certs
+root:~/{device-id}/certs# vi config.json
 </pre></div>
 </div>
-<p>または、</p>
-<div class="highlight-python"><div class="highlight"><pre>$ sudo cu -s 115200 -l /dev/tty.usbserial-XXXXXXX
-Password: ←MacOSのrootパスワードを入力
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>{
+  &quot;accessKeyId&quot;: &quot;&lt;your access key&gt;&quot;,        ←&lt;your access key&gt;にAccessKeyを入力
+  &quot;secretAccessKey&quot;: &quot;&lt;your secret key&gt;&quot;,    ←&lt;your secret key&gt;にSecretKeyを入力
+  &quot;region&quot;: &quot;ap-northeast-1&quot;
+}
 </pre></div>
 </div>
-<p>プロンプトが表示されれば接続成功です。loginのプロンプトで、ユーザ名”root”、パスワード”Password1”でログインしてください。</p>
-<div class="highlight-python"><div class="highlight"><pre>edison login: root
-Password: ******** ←パスワードを入力
-root@edison1: ~#
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>証明書作成のスクリプトを実行します。certsディレクトリにプライベートキー(privatekey.pem)とCSR(cert.csr)がある前提です。なければ、作成してください。CSRの内容を元に証明書を作成しています。出力されるcertificateIdの英数字文字列をデバイス保有者に渡してください。次章のAWS IoTの設定の中で証明書を特定するために利用します。</p>
+<div class="highlight-python"><div class="highlight"><pre> root@edison:~/{device-id}/certs# node create_cert.js
+ ~
+ { certificateArn: &#39;arn:aws:iot:ap-northeast-1:xxxxxxxxxxxxxx:cert/&lt;英数字文字列&gt;&#39;,
+certificateId: &#39;&lt;英数字文字列&gt;&#39;,
+~
 </pre></div>
 </div>
+<div class="line-block">
+<div class="line"><br /></div>
 </div>
-<div class="section" id="wifi">
-<h2>2.3. WiFi設定<a class="headerlink" href="#wifi" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>WiFiの設定を行います。ログイン後、<strong>configure_edison &#8211;wifi</strong> コマンドでSSIDとパスワードの設定を実施してください。</p>
-<div class="highlight-python"><div class="highlight"><pre>root@edison1: ~# configure_edison --wifi
-
-Configre Edison: WiFi Connection
-
-Scanning: 8 seconds left..
-1. Exit WiFi setup
-2. Manually input a hidden SSID
-3. Guest
-4. xxxxxxxxx
-
-Enter 0 to rescan for networks.
-Enter 1 to exit.
-Enter 2 to input a hidden network SSID.
-Enter a number between 3 to N to choose one of the listed network SSIDs: ←Guestが表示されている番号を入力
-
-Is Guest corrrect? [Y or N]: ←Yを入力
-
-What is the network password?: ←WiFiのパスワードを入力
-Initiating connection to Guest. Please wait...
-Attempting to enable network access, please check &#39;wpa_cli status&#39; after a minute to confirm.
-Done. Please connect your laptop or PC to the same network as this device and go to http://x.x.x.x or http://edison.local in your browser.
-(Doneが出力されたら成功）
+<p>証明書ファイル(cert.pem)がcertsディレクトリ内に存在することを確認します。</p>
+<div class="highlight-python"><div class="highlight"><pre>root@edison:~/{device-id}/certs# ls
+cert.csr        config.json     node_modules    rootca.crt
+cert.pem        create_cert.js  privatekey.pem
 </pre></div>
 </div>
 </div>
@@ -206,10 +151,9 @@ Done. Please connect your laptop or PC to the same network as this device and go
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">目次</a></h3>
   <ul>
-<li><a class="reference internal" href="#">2. インテルEdisonの設定</a><ul>
-<li><a class="reference internal" href="#id1">2.1. センサーの接続</a></li>
-<li><a class="reference internal" href="#id2">2.2. シリアルポート接続</a></li>
-<li><a class="reference internal" href="#wifi">2.3. WiFi設定</a></li>
+<li><a class="reference internal" href="#">2. ハンズオン準備</a><ul>
+<li><a class="reference internal" href="#cloudformation">2.1. ハンズオン用CloudFormationのスタック作成</a></li>
+<li><a class="reference internal" href="#id2">2.2. 【スタッフ用】サンプルコードの準備</a></li>
 </ul>
 </li>
 </ul>
@@ -218,8 +162,8 @@ Done. Please connect your laptop or PC to the same network as this device and go
   <p class="topless"><a href="01.html"
                         title="前の章へ">1. イントロダクション</a></p>
   <h4>次のトピックへ</h4>
-  <p class="topless"><a href="03.html"
-                        title="次の章へ">3. ハンズオン準備</a></p>
+  <p class="topless"><a href="04.html"
+                        title="次の章へ">3. Amazon SNSの設定</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -251,7 +195,7 @@ Done. Please connect your laptop or PC to the same network as this device and go
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="03.html" title="3. ハンズオン準備"
+          <a href="04.html" title="3. Amazon SNSの設定"
              >次へ</a> |</li>
         <li class="right" >
           <a href="01.html" title="1. イントロダクション"
