@@ -15,6 +15,18 @@ index.jsのノートパッドなどのツールで開きます。
 .. code-block:: javascript
   :linenos:   
 
+     var thingShadows = awsIot.thingShadow({
+       keyPath: '/home/root/.node_app_slot/certs/privatekey.pem',
+       certPath: '/home/root/.node_app_slot/certs/cert.pem',
+       caPath: '/home/root/.node_app_slot/certs/rootca.crt',
+       clientId: 'edison_shadow_client',
+       region: 'ap-northeast-1'
+    });
+
+
+.. code-block:: javascript
+  :linenos:   
+
     var moment = require('moment');
     var APP_ID = '<<アプリID>>';
     var SUBDOMAIN = '<<サブドメイン>>';
