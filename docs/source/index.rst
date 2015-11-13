@@ -43,9 +43,10 @@
 サンプルプログラム
 ==================
 
-本ハンズオンで利用するサンプルプログラムです。Edison上で利用します。
+本ハンズオンで利用するサンプルプログラムです。
 
-ここにURL
+https://github.com/ToshiEna/kintone-aws-iot-handson-2015/blob/master/download/sample.zip
+
 
 
 よくあるトラブル
