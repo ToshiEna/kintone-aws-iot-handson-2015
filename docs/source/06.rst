@@ -7,7 +7,7 @@ AWS Lambdaの設定
 ==============
 以下のサイトからコードをダウンロードします。
 
-https://ここかえる/*.zip
+https://github.com/ToshiEna/kintone-aws-iot-handson-2015/raw/master/download/sample.zip
 
 zipをunzipなどで解凍します。
 index.jsのノートパッドなどのツールで開きます。

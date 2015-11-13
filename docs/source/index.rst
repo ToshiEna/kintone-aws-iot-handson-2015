@@ -45,7 +45,7 @@
 
 本ハンズオンで利用するサンプルプログラムです。
 
-https://github.com/ToshiEna/kintone-aws-iot-handson-2015/blob/master/download/sample.zip
+https://github.com/ToshiEna/kintone-aws-iot-handson-2015/raw/master/download/sample.zip
 
 
 
