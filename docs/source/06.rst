@@ -15,6 +15,7 @@ index.jsのノートパッドなどのツールで開きます。
 .. code-block:: javascript
   :linenos:   
 
+
 var moment = require('moment');
 var APP_ID = '<<アプリID>>';
 var SUBDOMAIN = '<<サブドメイン>>';
@@ -58,6 +59,7 @@ exports.handler = function(event, context) {
 		}
 	});
 };
+
 
 
 アプリIDアプリ、サブドメイン(cybozu.comまで含む)、Auth情報(同一のデータ)を編集して、保存します。
