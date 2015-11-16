@@ -48,87 +48,156 @@
             
   <div class="section" id="aws-iot-device-sdk">
 <h1>9. AWS IoT Device SDK解説<a class="headerlink" href="#aws-iot-device-sdk" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>本ハンズオンで利用したサンプルコードを元に、AWS IoT Device SDKの解説をします。</p>
-<div class="section" id="id1">
-<h2>9.1. シナリオ1の解説<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>シナリオ1ではTopic(edison/illuminance)向けに照度センサーのデータをMQTTを利用してPublishします。</p>
-</div>
-<div class="section" id="id2">
-<h2>9.2. シナリオ2の解説<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>シナリオ2ではShadowのdeltaトピックに対しSubscribeおよびupdateトピックに対しPublishを行っています。</p>
-<p>まず、証明書のパスを指定し、プライベート鍵、証明書、ルート証明書のパスを指定します。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7</pre></div></td><td class="code"><div class="highlight"><pre>   <span class="kd">var</span> <span class="nx">thingShadows</span> <span class="o">=</span> <span class="nx">awsIot</span><span class="p">.</span><span class="nx">thingShadow</span><span class="p">({</span>
-     <span class="nx">keyPath</span><span class="o">:</span> <span class="s1">&#39;/home/root/.node_app_slot/certs/privatekey.pem&#39;</span><span class="p">,</span>
-     <span class="nx">certPath</span><span class="o">:</span> <span class="s1">&#39;/home/root/.node_app_slot/certs/cert.pem&#39;</span><span class="p">,</span>
-     <span class="nx">caPath</span><span class="o">:</span> <span class="s1">&#39;/home/root/.node_app_slot/certs/rootca.crt&#39;</span><span class="p">,</span>
-     <span class="nx">clientId</span><span class="o">:</span> <span class="s1">&#39;edison_shadow_client&#39;</span><span class="p">,</span>
-     <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;ap-northeast-1&#39;</span>
-  <span class="p">});</span>
+<p>本ハンズオンで利用したゲートウェイ側のサンプルコードになります。</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre>
 </pre></div>
 </td></tr></table></div>
-<p>メッセージブローカに接続します。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre>  <span class="nx">thingShadows</span>
-   <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;connect&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;connected to awsiot.&#39;</span><span class="p">);</span>
-     <span class="nx">thingShadows</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="s1">&#39;edison&#39;</span><span class="p">);</span>
-     <span class="nx">clientTokenUpdate</span> <span class="o">=</span> <span class="nx">thingShadows</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="s1">&#39;edison&#39;</span><span class="p">,</span> <span class="nx">defaultState</span><span class="p">);</span>
-   <span class="p">});</span>
-</pre></div>
-</td></tr></table></div>
-<p>ステータスを監視します。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre>   <span class="nx">thingShadows</span>
-   <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">thingName</span><span class="p">,</span> <span class="nx">stat</span><span class="p">,</span> <span class="nx">clientToken</span><span class="p">,</span> <span class="nx">stateObject</span><span class="p">)</span> <span class="p">{</span>
-     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;received &#39;</span> <span class="o">+</span> <span class="nx">stat</span> <span class="o">+</span> <span class="s1">&#39; on &#39;</span> <span class="o">+</span> <span class="nx">thingName</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">stateObject</span><span class="p">));</span>
-   <span class="p">});</span>
-</pre></div>
-</td></tr></table></div>
-<p>アプリケーションからdesiredステータスのアップデートがあった場合、deltaのトピックにメッセージがpublishされます。deltaをsubscribeすることで変更をリアルタイムに受信します。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre>   <span class="nx">thingShadows</span>
-   <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">thingName</span><span class="p">,</span> <span class="nx">stateObject</span><span class="p">)</span> <span class="p">{</span>
-     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;received delta &#39;</span><span class="o">+</span><span class="s1">&#39; on &#39;</span> <span class="o">+</span> <span class="nx">thingName</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">stateObject</span><span class="p">));</span>
-     <span class="nx">updatedState</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;reported&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;led&quot;</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">}}};</span>
-   <span class="p">});</span>
-</pre></div>
-</td></tr></table></div>
-<p>ステータスをチェックし、デバイス内でそれぞれのステータスに応じた処理を実行します。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre>   <span class="k">if</span> <span class="p">(</span><span class="nx">stateObject</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">led</span> <span class="o">==</span> <span class="s1">&#39;on&#39;</span><span class="p">)</span> <span class="p">{</span>
-
-   <span class="c1">//ONの処理(LED点灯)</span>
-
-   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-
-   <span class="c1">//OFFの処理(LED消灯)</span>
-
-   <span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</div>
+<p>var noble = require(&#8216;noble&#8217;);
+var awsIot = require(&#8216;aws-iot-device-sdk&#8217;);
+var moment = require(&#8216;moment&#8217;);</p>
+<p>var deviceName = &#8216;devXX&#8217;;
+var topic = deviceName + &#8216;/ginga&#8217;;
+var myAddress = &#8220;<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a>&#8221;;</p>
+<dl class="docutils">
+<dt>var device = awsIot.device({</dt>
+<dd><blockquote class="first">
+<div>keyPath: &#8216;./certs/private.pem&#8217;,</div></blockquote>
+<dl class="last docutils">
+<dt>certPath: &#8216;./certs/cert.pem&#8217;,</dt>
+<dd>caPath: &#8216;./certs/root.pem&#8217;,</dd>
+<dt>clientId: deviceName,</dt>
+<dd>region: &#8216;ap-northeast-1&#8217;</dd>
+</dl>
+</dd>
+</dl>
+<p>});</p>
+<dl class="docutils">
+<dt>function publish_data(sensorType, value) {</dt>
+<dd><dl class="first last docutils">
+<dt>var record = {</dt>
+<dd><blockquote class="first">
+<div>&#8220;device&#8221;: deviceName,
+&#8220;sensor&#8221;: sensorType,
+&#8220;timestamp&#8221;: moment().toISOString(),
+&#8220;value&#8221;: value</div></blockquote>
+<p class="last">};
+console.log(&#8220;Publish: &#8221; + message);
+device.publish(topic, message);</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>}</p>
+<dl class="docutils">
+<dt>function temp(data){</dt>
+<dd>var v1 = parseInt(data[0]);
+var v2 = parseInt(data[1]) / 100;
+publish_data(&#8216;temp&#8217;,v1 + v2);</dd>
+</dl>
+<p>}</p>
+<dl class="docutils">
+<dt>function humid(data){</dt>
+<dd>var v1 = parseInt(data[2]);
+var v2 = parseInt(data[3]) / 100;
+publish_data(&#8216;humid&#8217;,v1 + v2);</dd>
+</dl>
+<p>}</p>
+<dl class="docutils">
+<dt>noble.on(&#8216;stateChange&#8217;, function(state) {</dt>
+<dd><dl class="first docutils">
+<dt>if (state === &#8216;poweredOn&#8217;) {</dt>
+<dd>noble.startScanning();</dd>
+<dt>} else {</dt>
+<dd>noble.stopScanning();</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<p>});</p>
+<dl class="docutils">
+<dt>noble.on(&#8216;discover&#8217;, function(peripheral) {</dt>
+<dd><p class="first">noble.stopScanning();
+//console.log(&#8216;Local Name: &#8216; + peripheral.advertisement.localName);
+if(myAddress == peripheral.address){</p>
+<blockquote class="last">
+<div><p>var serviceUUID = peripheral.advertisement.serviceUuids[0];
+console.log(&#8216;Service UUID: &#8216; + serviceUUID);
+peripheral.connect(function(error){</p>
+<blockquote>
+<div><p>if (error) console.log(&#8216;connect error: &#8216; + error);
+console.log(&#8216;connected to &#8216; + peripheral.uuid);
+peripheral.discoverServices([serviceUUID],</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>function (error, services){</dt>
+<dd>if (error) console.log(&#8216;discoverServices error: &#8216; + error);
+console.log(&#8216;services.length: &#8216; + services.length);
+var service = services[0];
+service.discoverCharacteristics(null,function(error, characteristicss</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd>
+<dt>){</dt>
+<dd><blockquote class="first">
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>if (error) console.log(&#8216;discoverCharacteristics error: &#8216; + error);
+console.log(&#8216;characteristics.length: &#8216; + characteristics.length);
+characteristics[0].notify(true, function(error){</p>
+<blockquote>
+<div><p>if (error) console.log(&#8216;notify error: &#8216; + error);
+setInterval(function(){</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>characteristics[0].read(function(error, data){</dt>
+<dd><blockquote class="first">
+<div><dl class="docutils">
+<dt>if (data){</dt>
+<dd><blockquote class="first">
+<div>//console.log( data );
+humid(data);
+temp(data);</div></blockquote>
+<p class="last">}</p>
+</dd>
+</dl>
+</div></blockquote>
+<p class="last">});</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}, 10000);</p>
+</div></blockquote>
+<p>});</p>
+</div></blockquote>
+<p>});</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>);</p>
+</div></blockquote>
+<p>});</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>} else {</dt>
+<dd>console.log(&#8220;not device&#8221;);</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<p>});</p>
+<dl class="docutils">
+<dt>device</dt>
+<dd><dl class="first docutils">
+<dt>.on(&#8216;connect&#8217;, function() {</dt>
+<dd>console.log(&#8216;Connected to Message Broker.&#8217;);</dd>
+</dl>
+<p class="last">});</p>
+</dd>
+</dl>
 </div>
 
 
@@ -137,15 +206,6 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">目次</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">9. AWS IoT Device SDK解説</a><ul>
-<li><a class="reference internal" href="#id1">9.1. シナリオ1の解説</a></li>
-<li><a class="reference internal" href="#id2">9.2. シナリオ2の解説</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>前のトピックへ</h4>
   <p class="topless"><a href="08.html"
                         title="前の章へ">8. ハンズオン終了後</a></p>

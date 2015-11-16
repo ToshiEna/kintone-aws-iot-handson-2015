@@ -2,81 +2,103 @@
 AWS IoT Device SDK解説
 ==========================
 
-本ハンズオンで利用したサンプルコードを元に、AWS IoT Device SDKの解説をします。
+本ハンズオンで利用したゲートウェイ側のサンプルコードになります。
 
-シナリオ1の解説
-===============
-
-シナリオ1ではTopic(edison/illuminance)向けに照度センサーのデータをMQTTを利用してPublishします。
-
-
-
-シナリオ2の解説
-=============================
-
-シナリオ2ではShadowのdeltaトピックに対しSubscribeおよびupdateトピックに対しPublishを行っています。
-
-まず、証明書のパスを指定し、プライベート鍵、証明書、ルート証明書のパスを指定します。
-
-.. code-block:: javascript
-  :linenos:   
-
-     var thingShadows = awsIot.thingShadow({
-       keyPath: '/home/root/.node_app_slot/certs/privatekey.pem',
-       certPath: '/home/root/.node_app_slot/certs/cert.pem',
-       caPath: '/home/root/.node_app_slot/certs/rootca.crt',
-       clientId: 'edison_shadow_client',
-       region: 'ap-northeast-1'
-    });
-
-
-メッセージブローカに接続します。
 
 
 .. code-block:: javascript
   :linenos:   
 
-    thingShadows
-     .on('connect', function() {
-       console.log('connected to awsiot.');
-       thingShadows.register('edison');
-       clientTokenUpdate = thingShadows.update('edison', defaultState);
-     });
+var noble = require('noble');
+var awsIot = require('aws-iot-device-sdk');
+var moment = require('moment');
+
+var deviceName = 'devXX';
+var topic = deviceName + '/ginga';
+var myAddress = "****";
+
+var device = awsIot.device({
+   keyPath: './certs/private.pem',
+  certPath: './certs/cert.pem',
+    caPath: './certs/root.pem',
+  clientId: deviceName,
+    region: 'ap-northeast-1'
+});
+
+function publish_data(sensorType, value) {
+     var record = {
+        "device": deviceName,
+        "sensor": sensorType,
+        "timestamp": moment().toISOString(),
+        "value": value
+      };
+      console.log("Publish: " + message);
+      device.publish(topic, message);
+}
+
+function temp(data){
+  var v1 = parseInt(data[0]);
+  var v2 = parseInt(data[1]) / 100;
+  publish_data('temp',v1 + v2);
+}
+
+function humid(data){
+  var v1 = parseInt(data[2]);
+  var v2 = parseInt(data[3]) / 100;
+  publish_data('humid',v1 + v2);
+}
+
+noble.on('stateChange', function(state) {
+  if (state === 'poweredOn') {
+    noble.startScanning();
+  } else {
+    noble.stopScanning();
+  }
+});
+
+noble.on('discover', function(peripheral) {
+  noble.stopScanning();
+  //console.log('Local Name: ' + peripheral.advertisement.localName);
+  if(myAddress == peripheral.address){
+      var serviceUUID = peripheral.advertisement.serviceUuids[0];
+      console.log('Service UUID: ' + serviceUUID);
+      peripheral.connect(function(error){
+        if (error) console.log('connect error: ' + error);
+        console.log('connected to ' + peripheral.uuid);
+        peripheral.discoverServices([serviceUUID],
+          function (error, services){
+            if (error) console.log('discoverServices error: ' + error);
+            console.log('services.length: ' + services.length);
+            var service = services[0];
+            service.discoverCharacteristics(null,function(error, characteristicss
+){
+              if (error) console.log('discoverCharacteristics error: ' + error);
+              console.log('characteristics.length: ' + characteristics.length);
+              characteristics[0].notify(true, function(error){
+                if (error) console.log('notify error: ' + error);
+                setInterval(function(){
+                  characteristics[0].read(function(error, data){
+                    if (data){
+                      //console.log( data );
+                      humid(data);
+                      temp(data);
+                     }
+                   });
+                }, 10000);
+              });
+            });
+          }
+        );
+      });
+  } else {
+    console.log("not device");
+  }
+});
+
+device
+  .on('connect', function() {
+    console.log('Connected to Message Broker.');
+  });
 
 
-ステータスを監視します。
 
-.. code-block:: javascript
-  :linenos:   
-     
-     thingShadows
-     .on('status', function(thingName, stat, clientToken, stateObject) {
-       console.log('received ' + stat + ' on ' + thingName + ': ' + JSON.stringify(stateObject));
-     });
-
-アプリケーションからdesiredステータスのアップデートがあった場合、deltaのトピックにメッセージがpublishされます。deltaをsubscribeすることで変更をリアルタイムに受信します。
-
-.. code-block:: javascript
-  :linenos:   
-     
-     thingShadows
-     .on('delta', function(thingName, stateObject) {
-       console.log('received delta '+' on ' + thingName + ': ' + JSON.stringify(stateObject));
-       updatedState = {"state":{"reported":{"led": ""}}};
-     });
-
-     
-ステータスをチェックし、デバイス内でそれぞれのステータスに応じた処理を実行します。
-     
-.. code-block:: javascript
-  :linenos:   
-
-     if (stateObject.state.led == 'on') {
-
-     //ONの処理(LED点灯)
-     
-     } else {
-
-     //OFFの処理(LED消灯)
-     
-     }

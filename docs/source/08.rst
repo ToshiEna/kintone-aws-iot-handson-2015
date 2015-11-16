@@ -29,3 +29,13 @@ CloudFormationスタックの削除
 
 .. image:: images/8-delete-cf-stack-1.png
 
+
+その他のリソースの削除
+============================
+
+- Amazon SNSのトピック
+- AWS LambdaのFunction
+
+それぞれのコンソールに移り、対象リソースを選択し、削除してください。
+
+
