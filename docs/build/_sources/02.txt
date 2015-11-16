@@ -22,7 +22,7 @@
 
 "Choose a template"から"Specify an Amazon S3 template URL"にチェックを入れ、以下のパスを入力し、[Next]をクリックします。
 
-https://raw.githubusercontent.com/ToshiEna/kintone-aws-iot-handson-2015/master/templates/awsiothandson.template
+http://toshiake-iot-handson.s3.amazonaws.com/AWSIoT/cf/awsiothandson.template
 
 |
 

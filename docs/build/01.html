@@ -67,7 +67,34 @@
 <dl class="docutils">
 <dt>ネビラボ社が提供するBLEセンサーです。本ハンズオンではセンサーからのデータ取得、AWS IoTへのデータ送信に利用します。</dt>
 <dd><p class="first"><a class="reference external" href="http://nebulab.co.jp/products/sensornet.html">http://nebulab.co.jp/products/sensornet.html</a></p>
-<p class="last">ペリフェラルには、温度センサ、湿度センサー、加速度センサーが実装されてます。</p>
+<p>ペリフェラルには、温度センサー、湿度センサー、加速度センサーが実装されてます。
+今回のハンズオンでは、温度センサーと湿度センサーを定期的（10秒間隔）にアップロードされます。
+クラウドに上がってくるフォーマットは、以下のとおりです。</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">key</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>device</td>
+<td>デバイス名</td>
+</tr>
+<tr class="row-odd"><td>sensor</td>
+<td>センサータイプ（temp = 温度、humid = 湿度）</td>
+</tr>
+<tr class="row-even"><td>timestamp</td>
+<td>デバイス側タイムスタンプ</td>
+</tr>
+<tr class="row-odd"><td>value</td>
+<td>センサーの値</td>
+</tr>
+</tbody>
+</table>
 </dd>
 </dl>
 <div class="line-block">

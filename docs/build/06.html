@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. AWS Lambdaの設定 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
+    <title>6. AWS Lambdaの設定 &mdash; awsiot-handson-fundamentals 0.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/translations.js"></script>
     <link rel="top" title="awsiot-handson-fundamentals 0.0 ドキュメント" href="index.html" />
-    <link rel="next" title="6. その他の設定（オプション）" href="07.html" />
-    <link rel="prev" title="4. kintoneの設定" href="05.html" /> 
+    <link rel="next" title="7. その他の設定（オプション）" href="07.html" />
+    <link rel="prev" title="5. kintoneの設定" href="05.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -36,10 +36,10 @@
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="07.html" title="6. その他の設定（オプション）"
+          <a href="07.html" title="7. その他の設定（オプション）"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
-          <a href="05.html" title="4. kintoneの設定"
+          <a href="05.html" title="5. kintoneの設定"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>
@@ -51,80 +51,106 @@
           <div class="body" role="main">
             
   <div class="section" id="aws-lambda">
-<h1>5. AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<h1>6. AWS Lambdaの設定<a class="headerlink" href="#aws-lambda" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <div class="section" id="id1">
-<h2>5.1. コードの修正<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>6.1. コードの修正<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>以下のサイトからコードをダウンロードします。</p>
-<p><a class="reference external" href="https:/">https:/</a>/ここかえる/<a href="#id2"><span class="problematic" id="id3">*</span></a>.zip</p>
+<p><a class="reference external" href="https://github.com/ToshiEna/kintone-aws-iot-handson-2015/raw/master/download/sample.zip">https://github.com/ToshiEna/kintone-aws-iot-handson-2015/raw/master/download/sample.zip</a></p>
 <p>zipをunzipなどで解凍します。
 index.jsのノートパッドなどのツールで開きます。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre></div></td><td class="code"><div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">moment</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;moment&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">APP_ID</span> <span class="o">=</span> <span class="s1">&#39;&lt;&lt;アプリID&gt;&gt;&#39;</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">SUBDOMAIN</span> <span class="o">=</span> <span class="s1">&#39;&lt;&lt;サブドメイン&gt;&gt;&#39;</span><span class="p">;</span>
+
+  <span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">dueDate</span> <span class="o">=</span> <span class="nx">moment</span><span class="p">().</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">).</span><span class="nx">format</span><span class="p">(</span><span class="s1">&#39;YYYY-MM-DD&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">acceptNum</span> <span class="o">=</span> <span class="nx">moment</span><span class="p">();</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">dueDate</span><span class="p">);</span>
+
+
+      <span class="nx">record</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;受付番号&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">acceptNum</span> <span class="p">},</span>
+          <span class="s1">&#39;タイトル&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">title</span> <span class="p">},</span>
+          <span class="s1">&#39;インシデント&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="s1">&#39;アラート&#39;</span> <span class="p">},</span>
+          <span class="s1">&#39;作業期限&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;DATE&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">dueDate</span> <span class="p">},</span>
+          <span class="s1">&#39;内容&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">value</span> <span class="p">}</span>
+      <span class="p">};</span>
+
+      <span class="nx">request</span><span class="p">({</span>
+          <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="nx">SUBDOMAIN</span> <span class="o">+</span> <span class="s2">&quot;/k/v1/record.json&quot;</span><span class="p">,</span>
+          <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+              <span class="s1">&#39;X-Cybozu-Authorization&#39;</span><span class="o">:</span> <span class="s1">&#39;&lt;&lt;Auth情報&gt;&gt;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Authorization&#39;</span><span class="o">:</span> <span class="s1">&#39;Basic &lt;&lt;Auth情報&gt;&gt;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;application/json&#39;</span>
+          <span class="p">},</span>
+          <span class="nx">json</span><span class="o">:</span> <span class="p">{</span>
+              <span class="s1">&#39;app&#39;</span><span class="o">:</span> <span class="nx">APP_ID</span><span class="p">,</span>
+              <span class="s1">&#39;record&#39;</span><span class="o">:</span> <span class="nx">record</span>
+          <span class="p">}</span>
+      <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">consle</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;err : &quot;</span> <span class="o">+</span> <span class="nx">util</span><span class="p">.</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">err</span><span class="p">));</span>
+          <span class="p">}</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;RESULT: &#39;</span><span class="p">);</span>
+              <span class="nx">context</span><span class="p">.</span><span class="nx">succeed</span><span class="p">();</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;response error: &quot;</span> <span class="o">+</span> <span class="nx">response</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;response error: &quot;</span> <span class="o">+</span> <span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+          <span class="p">}</span>
+      <span class="p">});</span>
+  <span class="p">};</span>
 </pre></div>
 </td></tr></table></div>
-<p>var moment = require(&#8216;moment&#8217;);
-var APP_ID = &#8216;&lt;&lt;アプリID&gt;&gt;&#8217;;
-var SUBDOMAIN = &#8216;&lt;&lt;サブドメイン&gt;&gt;&#8217;;</p>
-<dl class="docutils">
-<dt>exports.handler = function(event, context) {</dt>
-<dd><p class="first">var dueDate = moment().add(1, &#8216;d&#8217;).format(&#8216;YYYY-MM-DD&#8217;);
-var acceptNum = moment();
-console.log(dueDate);</p>
-<blockquote class="last">
-<div><dl class="docutils">
-<dt>record = {</dt>
-<dd>&#8216;受付番号&#8217;: { value: acceptNum },
-&#8216;タイトル&#8217;: { value: event.title },
-&#8216;インシデント&#8217;: { value: &#8216;アラート&#8217; },
-&#8216;作業期限&#8217;: { type: &#8216;DATE&#8217;, value: dueDate },
-&#8216;内容&#8217;: { value: event.value }</dd>
-</dl>
-<p>};</p>
-<dl class="docutils">
-<dt>request({</dt>
-<dd><p class="first">method: &#8216;POST&#8217;,
-url: &#8220;<a class="reference external" href="https://">https://</a>&#8221; + SUBDOMAIN + &#8220;/k/v1/record.json&#8221;,
-headers: {</p>
-<blockquote>
-<div>&#8216;X-Cybozu-Authorization&#8217;: &#8216;&lt;&lt;Auth情報&gt;&gt;&#8217;,
-&#8216;Authorization&#8217;: &#8216;Basic &lt;&lt;Auth情報&gt;&gt;&#8217;,
-&#8216;Content-Type&#8217;: &#8216;application/json&#8217;</div></blockquote>
-<p>},
-json: {</p>
-<blockquote class="last">
-<div>&#8216;app&#8217;: APP_ID,
-&#8216;record&#8217;: record</div></blockquote>
-</dd>
-</dl>
-<p>}
-}, function(err, response, body) {</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>if (err) {</dt>
-<dd>consle.log(&#8220;err : &#8221; + util.inspect(err));</dd>
-</dl>
-<p>}
-if (response.statusCode === 200) {</p>
-<blockquote>
-<div>console.log(&#8216;RESULT: &#8216;);
-context.succeed();</div></blockquote>
-<dl class="docutils">
-<dt>} else {</dt>
-<dd>console.log(&#8220;response error: &#8221; + response.statusCode + &#8221;, &#8221; + err);
-console.log(&#8220;response error: &#8221; + body.message);</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>});</p>
-</div></blockquote>
-</dd>
-</dl>
-<p>};</p>
 <p>アプリIDアプリ、サブドメイン(cybozu.comまで含む)、Auth情報(同一のデータ)を編集して、保存します。</p>
 <p>編集後、AWS Lambdaにコードをアップロードするためにサイドzipで圧縮します。</p>
 <p>$ zip -r index.zip index.js node_module</p>
 </div>
-<div class="section" id="id4">
-<h2>5.2. AWS Lambdaの設定<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id2">
+<h2>6.2. AWS Lambdaの設定<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>AWS Lambdaのコンソールをサービス一覧から選択し、起動します。
 改めて東京リージョンであることを確認してください。
 &#8220;Create a Lambda Function&#8221;を選択します。</p>
@@ -164,7 +190,7 @@ RoleのリストからBasic execution roleを選択します。</p>
 </div>
 </div>
 <div class="section" id="aws-iot">
-<h2>5.3. AWS IoTのルール設定<a class="headerlink" href="#aws-iot" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>6.3. AWS IoTのルール設定<a class="headerlink" href="#aws-iot" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>Lambdaの登録が終わったので、先ほどのSNSと同様の手段で、Lambdaを設定します。
 手順は、SNSとほぼ同等で、Lambdaを選択する部分のみことなります。</p>
 <img alt="_images/6-iot-lambda-rule.png" src="_images/6-iot-lambda-rule.png" />
@@ -185,20 +211,20 @@ SNSの時と同様10秒単位でセンサーデータがAWS IoTにPublishされ�
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">目次</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5. AWS Lambdaの設定</a><ul>
-<li><a class="reference internal" href="#id1">5.1. コードの修正</a></li>
-<li><a class="reference internal" href="#id4">5.2. AWS Lambdaの設定</a></li>
-<li><a class="reference internal" href="#aws-iot">5.3. AWS IoTのルール設定</a></li>
+<li><a class="reference internal" href="#">6. AWS Lambdaの設定</a><ul>
+<li><a class="reference internal" href="#id1">6.1. コードの修正</a></li>
+<li><a class="reference internal" href="#id2">6.2. AWS Lambdaの設定</a></li>
+<li><a class="reference internal" href="#aws-iot">6.3. AWS IoTのルール設定</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>前のトピックへ</h4>
   <p class="topless"><a href="05.html"
-                        title="前の章へ">4. kintoneの設定</a></p>
+                        title="前の章へ">5. kintoneの設定</a></p>
   <h4>次のトピックへ</h4>
   <p class="topless"><a href="07.html"
-                        title="次の章へ">6. その他の設定（オプション）</a></p>
+                        title="次の章へ">7. その他の設定（オプション）</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -230,10 +256,10 @@ SNSの時と同様10秒単位でセンサーデータがAWS IoTにPublishされ�
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="07.html" title="6. その他の設定（オプション）"
+          <a href="07.html" title="7. その他の設定（オプション）"
              >次へ</a> |</li>
         <li class="right" >
-          <a href="05.html" title="4. kintoneの設定"
+          <a href="05.html" title="5. kintoneの設定"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">awsiot-handson-fundamentals 0.0 ドキュメント</a> &raquo;</li> 
       </ul>
