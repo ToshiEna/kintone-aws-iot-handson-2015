@@ -49,155 +49,187 @@
   <div class="section" id="aws-iot-device-sdk">
 <h1>9. AWS IoT Device SDK解説<a class="headerlink" href="#aws-iot-device-sdk" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <p>本ハンズオンで利用したゲートウェイ側のサンプルコードになります。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">noble</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;noble&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">awsIot</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;aws-iot-device-sdk&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">moment</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;moment&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">deviceName</span> <span class="o">=</span> <span class="s1">&#39;devXX&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">topic</span> <span class="o">=</span> <span class="nx">deviceName</span> <span class="o">+</span> <span class="s1">&#39;/ginga&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">myAddress</span> <span class="o">=</span> <span class="s2">&quot;****&quot;</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">device</span> <span class="o">=</span> <span class="nx">awsIot</span><span class="p">.</span><span class="nx">device</span><span class="p">({</span>
+   <span class="nx">keyPath</span><span class="o">:</span> <span class="s1">&#39;./certs/private.pem&#39;</span><span class="p">,</span>
+  <span class="nx">certPath</span><span class="o">:</span> <span class="s1">&#39;./certs/cert.pem&#39;</span><span class="p">,</span>
+    <span class="nx">caPath</span><span class="o">:</span> <span class="s1">&#39;./certs/root.pem&#39;</span><span class="p">,</span>
+  <span class="nx">clientId</span><span class="o">:</span> <span class="nx">deviceName</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;ap-northeast-1&#39;</span>
+<span class="p">});</span>
+
+<span class="kd">function</span> <span class="nx">publish_data</span><span class="p">(</span><span class="nx">sensorType</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+     <span class="kd">var</span> <span class="nx">record</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;device&quot;</span><span class="o">:</span> <span class="nx">deviceName</span><span class="p">,</span>
+        <span class="s2">&quot;sensor&quot;</span><span class="o">:</span> <span class="nx">sensorType</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="o">:</span> <span class="nx">moment</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">(),</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="nx">value</span>
+      <span class="p">};</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Publish: &quot;</span> <span class="o">+</span> <span class="nx">message</span><span class="p">);</span>
+      <span class="nx">device</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="nx">topic</span><span class="p">,</span> <span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">temp</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">v1</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="kd">var</span> <span class="nx">v2</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="nx">publish_data</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span><span class="nx">v1</span> <span class="o">+</span> <span class="nx">v2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">humid</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">v1</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+  <span class="kd">var</span> <span class="nx">v2</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="nx">publish_data</span><span class="p">(</span><span class="s1">&#39;humid&#39;</span><span class="p">,</span><span class="nx">v1</span> <span class="o">+</span> <span class="nx">v2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;stateChange&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;poweredOn&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">startScanning</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">stopScanning</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;discover&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">peripheral</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">noble</span><span class="p">.</span><span class="nx">stopScanning</span><span class="p">();</span>
+  <span class="c1">//console.log(&#39;Local Name: &#39; + peripheral.advertisement.localName);</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">myAddress</span> <span class="o">==</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">address</span><span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">serviceUUID</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">serviceUuids</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Service UUID: &#39;</span> <span class="o">+</span> <span class="nx">serviceUUID</span><span class="p">);</span>
+      <span class="nx">peripheral</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;connect error: &#39;</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;connected to &#39;</span> <span class="o">+</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">uuid</span><span class="p">);</span>
+        <span class="nx">peripheral</span><span class="p">.</span><span class="nx">discoverServices</span><span class="p">([</span><span class="nx">serviceUUID</span><span class="p">],</span>
+          <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">services</span><span class="p">){</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;discoverServices error: &#39;</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;services.length: &#39;</span> <span class="o">+</span> <span class="nx">services</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="nx">services</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+            <span class="nx">service</span><span class="p">.</span><span class="nx">discoverCharacteristics</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">characteristicss</span>
+<span class="p">){</span>
+              <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;discoverCharacteristics error: &#39;</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;characteristics.length: &#39;</span> <span class="o">+</span> <span class="nx">characteristics</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+              <span class="nx">characteristics</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">notify</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">){</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;notify error: &#39;</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+                <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                  <span class="nx">characteristics</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">read</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+                      <span class="c1">//console.log( data );</span>
+                      <span class="nx">humid</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                      <span class="nx">temp</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                     <span class="p">}</span>
+                   <span class="p">});</span>
+                <span class="p">},</span> <span class="mi">10000</span><span class="p">);</span>
+              <span class="p">});</span>
+            <span class="p">});</span>
+          <span class="p">}</span>
+        <span class="p">);</span>
+      <span class="p">});</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;not device&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">device</span>
+  <span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;connect&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Connected to Message Broker.&#39;</span><span class="p">);</span>
+  <span class="p">});</span>
 </pre></div>
 </td></tr></table></div>
-<p>var noble = require(&#8216;noble&#8217;);
-var awsIot = require(&#8216;aws-iot-device-sdk&#8217;);
-var moment = require(&#8216;moment&#8217;);</p>
-<p>var deviceName = &#8216;devXX&#8217;;
-var topic = deviceName + &#8216;/ginga&#8217;;
-var myAddress = &#8220;<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a>&#8221;;</p>
-<dl class="docutils">
-<dt>var device = awsIot.device({</dt>
-<dd><blockquote class="first">
-<div>keyPath: &#8216;./certs/private.pem&#8217;,</div></blockquote>
-<dl class="last docutils">
-<dt>certPath: &#8216;./certs/cert.pem&#8217;,</dt>
-<dd>caPath: &#8216;./certs/root.pem&#8217;,</dd>
-<dt>clientId: deviceName,</dt>
-<dd>region: &#8216;ap-northeast-1&#8217;</dd>
-</dl>
-</dd>
-</dl>
-<p>});</p>
-<dl class="docutils">
-<dt>function publish_data(sensorType, value) {</dt>
-<dd><dl class="first last docutils">
-<dt>var record = {</dt>
-<dd><blockquote class="first">
-<div>&#8220;device&#8221;: deviceName,
-&#8220;sensor&#8221;: sensorType,
-&#8220;timestamp&#8221;: moment().toISOString(),
-&#8220;value&#8221;: value</div></blockquote>
-<p class="last">};
-console.log(&#8220;Publish: &#8221; + message);
-device.publish(topic, message);</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>}</p>
-<dl class="docutils">
-<dt>function temp(data){</dt>
-<dd>var v1 = parseInt(data[0]);
-var v2 = parseInt(data[1]) / 100;
-publish_data(&#8216;temp&#8217;,v1 + v2);</dd>
-</dl>
-<p>}</p>
-<dl class="docutils">
-<dt>function humid(data){</dt>
-<dd>var v1 = parseInt(data[2]);
-var v2 = parseInt(data[3]) / 100;
-publish_data(&#8216;humid&#8217;,v1 + v2);</dd>
-</dl>
-<p>}</p>
-<dl class="docutils">
-<dt>noble.on(&#8216;stateChange&#8217;, function(state) {</dt>
-<dd><dl class="first docutils">
-<dt>if (state === &#8216;poweredOn&#8217;) {</dt>
-<dd>noble.startScanning();</dd>
-<dt>} else {</dt>
-<dd>noble.stopScanning();</dd>
-</dl>
-<p class="last">}</p>
-</dd>
-</dl>
-<p>});</p>
-<dl class="docutils">
-<dt>noble.on(&#8216;discover&#8217;, function(peripheral) {</dt>
-<dd><p class="first">noble.stopScanning();
-//console.log(&#8216;Local Name: &#8216; + peripheral.advertisement.localName);
-if(myAddress == peripheral.address){</p>
-<blockquote class="last">
-<div><p>var serviceUUID = peripheral.advertisement.serviceUuids[0];
-console.log(&#8216;Service UUID: &#8216; + serviceUUID);
-peripheral.connect(function(error){</p>
-<blockquote>
-<div><p>if (error) console.log(&#8216;connect error: &#8216; + error);
-console.log(&#8216;connected to &#8216; + peripheral.uuid);
-peripheral.discoverServices([serviceUUID],</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>function (error, services){</dt>
-<dd>if (error) console.log(&#8216;discoverServices error: &#8216; + error);
-console.log(&#8216;services.length: &#8216; + services.length);
-var service = services[0];
-service.discoverCharacteristics(null,function(error, characteristicss</dd>
-</dl>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</dd>
-<dt>){</dt>
-<dd><blockquote class="first">
-<div><blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>if (error) console.log(&#8216;discoverCharacteristics error: &#8216; + error);
-console.log(&#8216;characteristics.length: &#8216; + characteristics.length);
-characteristics[0].notify(true, function(error){</p>
-<blockquote>
-<div><p>if (error) console.log(&#8216;notify error: &#8216; + error);
-setInterval(function(){</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>characteristics[0].read(function(error, data){</dt>
-<dd><blockquote class="first">
-<div><dl class="docutils">
-<dt>if (data){</dt>
-<dd><blockquote class="first">
-<div>//console.log( data );
-humid(data);
-temp(data);</div></blockquote>
-<p class="last">}</p>
-</dd>
-</dl>
-</div></blockquote>
-<p class="last">});</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}, 10000);</p>
-</div></blockquote>
-<p>});</p>
-</div></blockquote>
-<p>});</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
-<p>);</p>
-</div></blockquote>
-<p>});</p>
-</div></blockquote>
-<dl class="docutils">
-<dt>} else {</dt>
-<dd>console.log(&#8220;not device&#8221;);</dd>
-</dl>
-<p class="last">}</p>
-</dd>
-</dl>
-<p>});</p>
-<dl class="docutils">
-<dt>device</dt>
-<dd><dl class="first docutils">
-<dt>.on(&#8216;connect&#8217;, function() {</dt>
-<dd>console.log(&#8216;Connected to Message Broker.&#8217;);</dd>
-</dl>
-<p class="last">});</p>
-</dd>
-</dl>
 </div>
 
 
