@@ -9,6 +9,7 @@ AWS IoT Device SDK解説
 .. code-block:: javascript
   :linenos:   
 
+
 var noble = require('noble');
 var awsIot = require('aws-iot-device-sdk');
 var moment = require('moment');
